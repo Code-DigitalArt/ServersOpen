@@ -1,0 +1,23 @@
+version: "2"
+services:
+    db:
+      image: mysql
+      command: --sql_mode=""
+      volumes:
+        - "/home/radosun/PhpstormProjects/Servers/mysql/data:/var/lib/mysql"
+        - "/home/radosun/PhpstormProjects/Servers/mysql/config:/etc/mysql"
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: "password"
+      ports:
+        - "3306:3306"
+      networks:
+        front:
+          ipv4_address: 172.21.0.4
+networks:
+    front:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 172.21.0.0/16
+#        - "/home/radosun/PhpstormProjects/Servers/mysql/config:/etc/mysql/conf.d"

@@ -1,0 +1,10 @@
+mysql/data/*
+mysql/log/*
+
+sqlranch/log/*
+sqlranch/data/*
+jenkins/home/*
+.idea/*
+alfresco/db/*
+alfresco/data/*
+nginx/error/*

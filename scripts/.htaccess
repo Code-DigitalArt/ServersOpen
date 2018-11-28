@@ -1,0 +1,287 @@
+############################################
+## uncomment these lines for CGI mode
+## make sure to specify the correct cgi php binary file name
+## it might be /cgi-bin/php-cgi
+
+#    Action php5-cgi /cgi-bin/php5-cgi
+#    AddHandler php5-cgi .php
+
+############################################
+## GoDaddy specific options
+
+#   Options -MultiViews
+
+## you might also need to add this line to php.ini
+##     cgi.fix_pathinfo = 1
+## if it still doesn't work, rename php.ini to php5.ini
+
+############################################
+## this line is specific for 1and1 hosting
+
+    #AddType x-mapp-php5 .php
+    #AddHandler x-mapp-php5 .php
+
+############################################
+## default index file
+
+    DirectoryIndex index.php
+
+
+
+<IfModule mod_php5.c>
+
+############################################
+## adjust memory limit
+
+#    php_value memory_limit 64M
+    php_value memory_limit 512M
+    php_value max_execution_time 18000
+
+############################################
+## disable magic quotes for php request vars
+
+    php_flag magic_quotes_gpc off
+
+############################################
+## disable automatic session start
+## before autoload was initialized
+
+    php_flag session.auto_start off
+
+############################################
+## enable resulting html compression
+
+    php_flag zlib.output_compression on
+
+###########################################
+# disable user agent verification to not break multiple image upload
+
+    php_flag suhosin.session.cryptua off
+
+###########################################
+# turn off compatibility with PHP4 when dealing with objects
+
+    php_flag zend.ze1_compatibility_mode Off
+
+##########################################
+# czas sesji
+
+	php_value session.gc_maxlifetime 7200
+
+</IfModule>
+
+<IfModule mod_security.c>
+###########################################
+# disable POST processing to not break multiple image upload
+
+    SecFilterEngine Off
+    SecFilterScanPOST Off
+</IfModule>
+
+<IfModule mod_deflate.c>
+
+############################################
+## enable apache served files compression
+## http://developer.yahoo.com/performance/rules.html#gzip
+# mod by Tomasz Misterka
+
+    # Insert filter on all content
+    SetOutputFilter DEFLATE
+    # Insert filter on selected content types only
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+
+    # Netscape 4.x has some problems...
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+    # Netscape 4.06-4.08 have some more problems
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+    # MSIE masquerades as Netscape, but it is fine
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+    # Don't compress images
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+
+    # Make sure proxies don't deliver the wrong content
+    Header append Vary User-Agent env=!dont-vary
+
+</IfModule>
+
+<IfModule mod_ssl.c>
+
+############################################
+## make HTTPS env vars available for CGI mode
+
+    SSLOptions StdEnvVars
+
+</IfModule>
+
+<IfModule mod_rewrite.c>
+
+############################################
+## enable rewrites
+
+    Options +FollowSymLinks
+    RewriteEngine on
+
+########By Tom 301 to www.valuetesters
+rewritecond %{http_host} ^valuetesters\.com [nc]
+rewriterule ^(.*)$ http://www.valuetesters.com/$1 [r=301,nc]
+#RewriteRule ^(.*)\.php$ $1.html [L,R]
+
+rewritecond %{http_host} ^valuetesters\.biggiweb\.com [nc]
+rewriterule ^(.*)$ http://www.valuetesters.com/$1 [r=301,nc]
+
+
+
+############################################
+## you can put here your magento root folder
+
+
+## path relative to web root
+
+    RewriteBase /
+
+# Mod for multidomain
+# By Tom 2013 04 14
+
+#RewriteCond %{HTTP_HOST} .*valuetesters\.com [NC]
+#RewriteRule .* - [E=MAGE_RUN_CODE:Valuetesters]
+#RewriteCond %{HTTP_HOST} .*valuetesters\.com [NC]
+#RewriteRule .* - [E=MAGE_RUN_TYPE:website]
+
+#RewriteCond %{HTTP_HOST} .*thermalimagercamera\.com [NC]
+#RewriteRule .* - [E=MAGE_RUN_CODE:ThermalImagerCamera]
+#RewriteCond %{HTTP_HOST} .*thermalimagercamera\.com [NC]
+#RewriteRule .* - [E=MAGE_RUN_TYPE:website]
+
+# End of Multidomain
+
+############################################
+## uncomment next line to enable light API calls processing
+
+    RewriteRule ^api/([a-z][0-9a-z_]+)/?$ api.php?type=$1 [QSA,L]
+
+############################################
+## rewrite API2 calls to api.php (by now it is REST only)
+
+    RewriteRule ^api/rest api.php?type=rest [QSA,L]
+
+
+############################################
+## workaround for HTTP authorization
+## in CGI environment
+
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+############################################
+## always send 404 on missing files in these folders
+
+    RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
+
+
+
+############################################
+## never rewrite for existing files, directories and links
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-l
+
+##############################################
+## rewrite 301 for _VT
+	
+	RedirectMatch 301 ^_VT/(.*)$ ^/$1
+
+######## by Tom 2012 12 04 ###################
+## rewrite error 404
+
+	ErrorDocument 404 http://www.valuetesters.com/cms/index/noRoute
+
+	
+############################################
+## rewrite everything else to index.php
+   
+   RewriteRule .* index.php [L]
+   
+
+</IfModule>
+
+
+############################################
+## Prevent character encoding issues from server overrides
+## If you still have problems, use the second line instead
+
+    AddDefaultCharset Off
+    #AddDefaultCharset UTF-8
+
+<IfModule mod_expires.c>
+
+############################################
+## Add default Expires header
+## http://developer.yahoo.com/performance/rules.html#expires
+
+    ExpiresActive On
+    ExpiresDefault "access plus 1 year"
+
+</IfModule>
+
+############################################
+## By default allow all access
+
+#    Order allow,deny
+#    Allow from all
+order deny,allow
+BrowserMatchNoCase ahref bot
+BrowserMatchNoCase adsbot bot
+BrowserMatchNoCase 80legs bot
+BrowserMatchNoCase AhrefsBot bot
+BrowserMatchNoCase Baiduspider bot
+BrowserMatchNoCase BLEXBot bot
+BrowserMatchNoCase EasouSpider bot
+BrowserMatchNoCase Exabot bot
+BrowserMatchNoCase Fatbot bot
+BrowserMatchNoCase go.mail.ru bot
+BrowserMatchNoCase MJ12bot bot
+BrowserMatchNoCase TwengaBot bot
+BrowserMatchNoCase URLAppendBot bot
+BrowserMatchNoCase webmeup bot
+BrowserMatchNoCase Yandex bot
+BrowserMatchNoCase Riddler bot
+BrowserMatchNoCase Sphider bot
+BrowserMatchNoCase DotBot bot
+BrowserMatchNoCase SpiderLing bot
+BrowserMatchNoCase Owlin bot
+BrowserMatchNoCase magpie-crawler bot
+BrowserMatchNoCase NerdyBot bot
+BrowserMatchNoCase inload.me bot
+BrowserMatchNoCase spbot bot bot
+BrowserMatchNoCase Niki-Bot bot
+BrowserMatchNoCase WebTarantula bot
+BrowserMatchNoCase AddThis bot
+BrowserMatchNoCase Sogou bot
+BrowserMatchNoCase DBot bot
+BrowserMatchNoCase meanpathbot bot
+BrowserMatchNoCase SISTRIX bot
+BrowserMatchNoCase 360Spider bot
+BrowserMatchNoCase rogerbot bot
+BrowserMatchNoCase SiteExplorer bot
+BrowserMatchNoCase GroupHigh bot
+Deny from env=bot
+
+
+###########################################
+## Deny access to release notes to prevent disclosure of the installed Magento version
+
+    <Files RELEASE_NOTES.txt>
+        order allow,deny
+        deny from all
+    </Files>
+
+############################################
+## If running in cluster environment, uncomment this
+## http://developer.yahoo.com/performance/rules.html#etags
+
+    FileETag none
+
+ 

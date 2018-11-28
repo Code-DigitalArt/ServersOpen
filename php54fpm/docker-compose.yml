@@ -1,0 +1,18 @@
+version: '2'
+services:
+    fpm:
+      restart: always
+      image: php54fpm
+      volumes:
+        - "/home/radosun/PhpstormProjects:/var/www"
+      networks:
+        mysql_front:
+        nginx_front:
+          ipv4_address: 172.18.0.4
+      environment:
+        - TIMEZONE=America/Denver
+networks:
+    mysql_front:
+      external: true
+    nginx_front:
+      external: true

@@ -1,0 +1,256 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Delete all triggers for a database MySQL
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SET @@session.group_concat_max_len = @@global.max_allowed_packet;
+
+SELECT GROUP_CONCAT(sql_string SEPARATOR '\n')
+FROM (
+    SELECT CONCAT('DROP TRIGGER IF EXISTS `', TRIGGER_NAME, '`;') AS sql_string,'1'
+    FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = 'lunddev_mage'
+    ) AS sql_strings
+GROUP BY '1';
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Slugify function PHP
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function slugify($text) {
+  // replace non letter or digits by -
+  $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+  // transliterate
+  $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+  // remove unwanted characters
+  $text = preg_replace('~[^-\w]+~', '', $text);
+  // trim
+  $text = trim($text, '-');
+  // remove duplicate -
+  $text = preg_replace('~-+~', '-', $text);
+  // lowercase
+  $text = strtolower($text);
+  if (empty($text)) {
+    return 'n-a';
+  }
+  return $text;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reindex all url rewrites for magento enterprise
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+cd shell && php indexer.php --reindex catalog_url_product && php indexer.php --reindex catalog_url_category && php indexer.php --reindex url_redirect
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reindex all 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+php indexer.php --reindexall
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Truncate all url key tables for enterprise edition Magento
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `core_url_rewrite`;
+TRUNCATE TABLE `enterprise_catalog_category_rewrite`;
+TRUNCATE TABLE `enterprise_catalog_product_rewrite`;
+TRUNCATE TABLE `enterprise_url_rewrite`;
+TRUNCATE TABLE `enterprise_url_rewrite_category_cl`;
+TRUNCATE TABLE `enterprise_url_rewrite_product_cl`;
+TRUNCATE TABLE `enterprise_url_rewrite_redirect_cl`;
+TRUNCATE TABLE `enterprise_url_rewrite_redirect_rewrite`;
+TRUNCATE TABLE `catalog_category_entity_url_key`;
+TRUNCATE TABLE `catalog_product_entity_url_key`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Truncate all url key tables for community edition Magento
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `core_url_rewrite`;
+TRUNCATE TABLE `catalog_category_entity_url_key`;
+TRUNCATE TABLE `catalog_product_entity_url_key`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rsync samples !!!!BE CAREFUL!!!! ALWAYS START WITH A DRY RUN
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+rsync --dry-run -arv user@server:/remote/folder/ /local/folder/
+
+// Download from remote
+rsync --dry-run -avzhe ssh media@208.185.97.43:~/media.uldev.co/public_html/shop/media/ ~/Sites/media-max/shop/media
+
+rsync --dry-run -avzhe ssh liton@208.185.97.43:~/liton.uldev.co/public_html/media/ /Users/unleadeddeveloper/Sites/liton-lighting/media
+
+rsync --dry-run -avzhe ssh jackrabbit@104.130.184.238:~/public_html/media/ ~/Sites/running-specialty-group/media
+
+rsync --dry-run --exclude "public_html/uploads/*" --exclude "public_html/store/media/*" --exclude "public_html/store/var/*" --exclude="public_html/designer*" --exclude="public_html/store/designer*" --exclude="public_html/images/*" --exclude="*\.tar\.gz" --exclude="*\.sql*" --exclude=".*thumbs/*" --exclude="*\.zip" --exclude="*\.tar" -avzhe ssh rpp@208.185.97.100:~/ ~/Sites/rpp
+
+rsync --dry-run -avzhe ssh troutsdev@208.185.97.251:~/public_html/media/ ~/Sites/trouts-fly-fishing/media
+
+rsync --dry-run -avzhe ssh trouts@208.185.97.230:~/public_html/media/ ~/Sites/trouts-fly-fishing/media
+
+rsync --dry-run -avzhe ssh rsg@208.185.97.184:~/dev/media/ ~/Sites/running-specialty-group/media
+
+rsync --dry-run -avzhe ssh alligator@216.98.195.250:~/alligatorperformance.com/public_html/media/ ~/Sites/alligator-performance/media
+
+rsync --dry-run -avzhe ssh tebo@208.185.97.45:~/tebo.uldev.co/public_html/media/ ~/Sites/tebo-store-fixtures/media
+
+rsync --dry-run -avzhe ssh lunddev@208.185.97.75:~/lunddev.build.moe/public_html/skin/ ~/Sites/lund-international/skin
+rsync --dry-run -avzhe ssh lunddev@208.185.97.75:~/lunddev.build.moe/public_html/js/ ~/Sites/lund-international/js
+rsync --dry-run -avzhe ssh lunddev@208.185.97.75:~/lunddev.build.moe/public_html/media/ ~/Sites/lund-international/media
+
+rsync --dry-run -avzhe ssh drbaileyskincare.com@drbaileyskincare.com.customers.tigertech.net:/var/www/html/dr/drbaileyskincare.com/blog/wp-content/uploads/ /var/www/html/blog/wp-content/uploads
+
+// Push to remote
+rsync --dry-run -avzhe "ssh" /Users/unleadeddeveloper/Sites/wheat-ridge-cyclery/store/media wheatridge@208.185.97.98:/home/wheatridge/store/media
+
+rsync --dry-run -avzhe "ssh" /Users/unleadeddeveloper/Sites/rpp/rpp_community/public_html/store/app/code/local/Unleaded/Pardot rpp@208.185.97.100:/home/rpp/rpp_community/public_html/store/app/code/local/Unleaded/
+
+rsync --delete --dry-run -avzhce ssh trouts@208.185.97.230:~/public_html/app ~/Sites/trouts-fly-fishing/app/
+
+rsync --dry-run -avzhe ssh liton@208.185.97.43:~/liton.uldev.co/public_html/media/ ~/Sites/liton-lighting/media
+
+
+scp /Users/unleadeddeveloper/Sites/rpp/rpp_community/public_html/store/app/etc/modules/Unleaded_Pardot.xml rpp@208.185.97.100:/home/rpp/rpp_community/public_html/store/app/etc/modules/Unleaded_Pardot.xml
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Delete all product images Magento
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE `catalog_product_entity_media_gallery`;
+TRUNCATE TABLE `catalog_product_entity_media_gallery_value`;
+SET FOREIGN_KEY_CHECKS = 1;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Reset mac core audio
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+sudo killall coreaudiod
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Print all layout handles for view in Magento
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var_dump(Mage::app()->getLayout()->getUpdate()->getHandles());exit;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Print all events in Magento
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+File: app/Mage.php
+public static function dispatchEvent($name, array $data = array())
+{
+    Mage::log('Event: ' . $name); //not using Mage::log, as 
+    //file_put_contents('/tmp/test.log','Dispatching '. $name. "\n",FILE_APPEND); //poor man's log
+    Varien_Profiler::start('DISPATCH EVENT:'.$name);
+    $result = self::app()->dispatchEvent($name, $data);
+    #$result = self::registry('events')->dispatch($name, $data);
+    Varien_Profiler::stop('DISPATCH EVENT:'.$name);
+    return $result;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Print queries in Magento
+// lib/Zend/Db/Adapter/Abstract.php->query():457
+// Add this to the start of the function
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Mage::log($sql);Mage::log($bind);
+// OR
+var_dump($sql);var_dump($bind);
+// OR filter by query type for example
+if (strpos($sql, 'INSERT') === 0)
+    var_dump($sql);var_dump($bind);
+
+// OR filter by table
+if (strstr($sql, 'customer_entity_address'))
+    var_dump($sql);var_dump($bind);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Print queries in EE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ee()->db->save_queries = TRUE;
+////// Put query functions here
+////// ee()->db->insert('exp_member_data', $data)
+ee()->db->queries
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mysqldump into gzipped file with timestamp
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+mysqldump -u isg_ee -p -h 208.185.97.42 isg_ee | gzip -v > isg_ee.$(date +"%Y%m%d.%H%M").sql.gz
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Check all checkboxes on a page using the javascript console
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+var allInputs = document.getElementsByTagName("input");
+for (var i = 0, max = allInputs.length; i < max; i++){
+    if (allInputs[i].type === 'checkbox')
+        allInputs[i].checked = true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// One liner for mysqldump and show name in shell
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+DB="alligator_ee"; mysqldump -u $DB -p $DB > $DB.$(date +"%Y%m%d.%H%M").sql && ls -la | grep $DB
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Log all events fired in a request
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//// Put in mageroot/app/Mage.php->dispatchEvent() :445
+Mage::log($name, null, 'events.log', true);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Alligator queries
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT * FROM `sales_flat_order` WHERE `customer_email` IS NULL;
+UPDATE `sales_flat_order` SET `customer_email` = 'jk@alligatorperformance.com' WHERE `customer_email` IS NULL;
+SELECT message_id,entity_id,entity_type,event_type FROM `core_email_queue` WHERE entity_id IN (505,506); 
+DELETE FROM `core_email_queue` WHERE entity_id IN (505,506); 
+SELECT * FROM `core_email_queue_recipients` WHERE message_id IN (880,881);
+
+216.98.195.250
+alligator
+pWlUTUPqX9w*Xb2PpZ1A
+
+SELECT entity_id FROM sales_flat_order WHERE entity_id NOT IN (SELECT entity_id FROM sales_flat_order_grid)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Remove table from mysqldump.sql
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+grep -n 'Table structure\|Dumping data for table' dump.sql 
+//// 19:-- Table structure for table `t1`
+//// 37:-- Dumping data for table `t1`
+//// 47:-- Table structure for table `t2`
+//// 66:-- Dumping data for table `t2`
+//// 76:-- Table structure for table `t3`
+//// 96:-- Dumping data for table `t3`
+////////// Let's say I want to remove `t2`
+sed '66,75 d' mysqldump.sql > clean.mysqldump.sql
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Save a single attribute to a product
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+$action = Mage::getSingleton('catalog/resource_product_action')
+            ->updateAttributes([$product_id], [
+                'name' => 'foobar!'
+            ], $store_id);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MYSQL
+// Select all abandoned rows. This is useful for cleaning up entity tables in Magento EAV
+// This will tell you what rows in your entity tables are referencing non-existing attributes
+// Then you can run a delete on them
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT a.* FROM catalog_product_entity_datetime a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_decimal a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_gallery a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_int a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_media_gallery a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_media_gallery_value a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_text a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_url_key a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+SELECT a.* FROM catalog_product_entity_varchar a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+DELETE a.* FROM catalog_product_entity_datetime a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_decimal a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_gallery a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_int a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_media_gallery a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_media_gallery_value a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_text a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_url_key a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;
+DELETE a.* FROM catalog_product_entity_varchar a NATURAL LEFT JOIN eav_attribute b WHERE b.attribute_id IS NULL;

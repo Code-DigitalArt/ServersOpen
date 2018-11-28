@@ -1,0 +1,15 @@
+version: "2"
+services:
+    repo:
+      image: registry:2
+      ports:
+        - "5000:5000"
+      restart: always
+      environment:
+        REGISTRY_AUTH: "htpasswd"
+        REGISTRY_AUTH_HTPASSWD_PATH: "/auth/htpasswd"
+        REGISTRY_AUTH_HTPASSWD_REALM: "Registry Realm"
+      volumes:
+       - /home/radosun/PhpstormProjects/Servers/registry/var:/var/lib/registry
+       - /home/radosun/PhpstormProjects/Servers/registry/certs:/certs
+       - /home/radosun/PhpstormProjects/Servers/registry/auth:/auth

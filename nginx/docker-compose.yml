@@ -1,0 +1,25 @@
+version: '2'
+services:
+    web:
+      restart: always
+      image: nginx
+      volumes:
+           - /home/radosun/PhpstormProjects/Servers/nginx/config:/etc/nginx/conf.d
+           - /home/radosun/PhpstormProjects/Servers/nginx/nginx.conf:/etc/nginx/nginx.conf
+           - /home/radosun/PhpstormProjects/Servers/nginx/error:/var/log/nginx
+           - /home/radosun/PhpstormProjects:/var/www
+      ports:
+           - "80:80"
+      environment:
+           - NGINX_HOST=rado.co
+           - NGINX_PORT=80
+      command: /bin/bash -c "envsubst '$$NGINX_HOST $$NGINX_PORT' < /etc/nginx/conf.d/fpm.conf > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+      networks:
+           front:
+             ipv4_address: 172.18.0.3
+networks:
+    front:
+      driver: bridge
+      ipam:
+        config:
+        - subnet: 172.18.0.0/16

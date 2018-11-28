@@ -1,0 +1,15 @@
+version: '2'
+services:
+    app:
+      image: php56mage
+      volumes:
+        - "/home/radosun/PhpstormProjects:/var/www/html"
+#      restart: always
+      ports:
+        - "80:80"
+        - "343:22"
+      networks:
+        - mysql_front
+networks:
+    mysql_front:
+      external: true

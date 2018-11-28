@@ -1,0 +1,18 @@
+version: "2"
+services:
+    db:
+      image: mysql
+      volumes:
+        - "/home/radosun/PhpstormProjects/Servers/sqlranch/data:/var/lib/mysql"
+        - "/home/radosun/PhpstormProjects/Servers/sqlranch/log:/var/lib/mysql"
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: "password"
+      ports:
+        - "3306:3306"
+      networks:
+        - front
+networks:
+    front:
+      driver: bridge
+#        - "/home/radosun/PhpstormProjects/Servers/mysql/config:/etc/mysql/conf.d"

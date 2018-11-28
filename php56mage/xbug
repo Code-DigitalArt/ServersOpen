@@ -1,0 +1,16 @@
+#!/bin/bash
+# Simple script to enable or disable xdebug profiling
+
+case $1 in
+  on)
+    sudo sed -i 's/xdebug.profiler_enable=0/xdebug.profiler_enable=1/g' /etc/php5/conf.d/xdebug.ini
+    sudo service apache2 restart
+  ;;
+  off)
+    sudo sed -i 's/xdebug.profiler_enable=1/xdebug.profiler_enable=0/g' /etc/php5/conf.d/xdebug.ini
+    sudo service apache2 restart
+  ;;
+  *)
+    echo "Usage: php_debug on|off"
+  ;;
+esac

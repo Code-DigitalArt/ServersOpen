@@ -1,0 +1,23 @@
+version: '2'
+services:
+    fpm:
+      restart: always
+      image: php7fpm
+      volumes:
+        - "/home/radosun/PhpstormProjects:/var/www"
+        - "./xdebug:/var/www/php/xdebug"
+        - "./config/php.ini:/usr/local/etc/php/php.ini"
+      expose:
+        - "9004"
+      networks:
+        mysql_front:
+        postgres_front:
+        nginx_front:
+            ipv4_address: 172.18.0.2
+networks:
+    nginx_front:
+      external: true
+    mysql_front:
+      external: true
+    postgres_front:
+      external: true

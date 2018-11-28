@@ -1,0 +1,14 @@
+version: '2'
+services:
+    jenkins:
+      image: jenkins
+      restart: always
+      ports:
+        - 8080:8080
+      volumes:
+        - "/home/radosun/PhpstormProjects/Servers/jenkins/home:/var/jenkins_home"
+      networks:
+        - nginx_front
+networks:
+    nginx_front:
+      external: true

@@ -1,0 +1,15 @@
+version: '2'
+services:
+    app: 
+      image: hiphopmage
+      volumes: 
+        - "/home/radosun/PhpstormProjects:/var/www/html"
+#      restart: always
+      ports:
+        - "80:80"
+        - "342:22"
+      networks:
+        - mysql_front
+networks:
+    mysql_front:
+      external: true

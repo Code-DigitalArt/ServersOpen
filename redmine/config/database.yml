@@ -1,0 +1,6 @@
+production:
+  adapter: mysql2
+  database: redmine
+  host: 172.18.0.1
+  username: redmine
+  password: redmine

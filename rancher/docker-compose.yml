@@ -1,0 +1,20 @@
+version: '2'
+services:
+    cattle:
+      image: rancher/server
+      ports:
+        - 8080:8080
+      networks:
+        - mysql_front
+        - nginx_front
+      environment:
+        - CATTLE_DB_CATTLE_MYSQL_HOST=172.18.0.1
+        - CATTLE_DB_CATTLE_MYSQL_PORT=3305
+        - CATTLE_DB_CATTLE_MYSQL_NAME=cattle
+        - CATTLE_DB_CATTLE_USERNAME=cattle
+        - CATTLE_DB_CATTLE_PASSWORD=cattle
+networks:
+    nginx_front:
+      external: true
+    mysql_front:
+      external: true

@@ -1,0 +1,62 @@
+FROM php:5.6-apache
+
+USER root
+
+RUN apt-get update && apt-get -y install \
+    libxml2-dev \
+    libmcrypt4 \
+    libmcrypt-dev \
+    libxslt-dev \
+    libicu-dev \
+    libpng-dev \
+    zlib1g-dev  \
+    libcurl4-openssl-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libpng-dev \
+    nano \
+    vim \
+    ack-grep \
+    wget \
+    git \
+    openssh-client \
+    telnet 
+    
+RUN docker-php-ext-configure gd \
+    --with-jpeg-dir=/usr/include/ \
+    --with-png-dir=/usr/include/
+
+RUN docker-php-ext-install \
+    mbstring \
+    mcrypt \
+    xsl \
+    intl \
+    gd \
+    curl \
+    mysql \
+    pdo_mysql \
+    soap \
+    zip
+
+RUN a2enmod rewrite
+RUN a2enmod headers
+
+RUN yes | pecl install xdebug \
+    && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini 
+
+RUN useradd -s /bin/bash magento_user
+RUN usermod -G www-data magento_user
+RUN usermod -G magento_user www-data
+
+COPY config/php.ini /usr/local/etc/php/
+#COPY config/perm.sh /var/www/ 
+COPY code/ /var/www/html/
+#RUN chmod +x /var/www/perm.sh
+#RUN /var/www/perm.sh /var/www/html
+RUN chmod -R 775 /var/www/html && \
+    chmod -R +x /var/www/html/bin && \
+    chown -R magento_user:www-data /var/www/ && \ 
+    curl -sS https://getcomposer.org/installer | \
+    php -- --install-dir=/usr/local/bin --filename=composer

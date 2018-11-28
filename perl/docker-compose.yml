@@ -1,0 +1,8 @@
+version: '3'
+services:
+    perl:
+      image: perl
+      volumes:
+        - "/home/radosun/PhpstormProjects:/usr/src/app"
+      working_dir: /usr/src/app
+      command: [ "perl", "./your-daemon-or-script.pl" ]

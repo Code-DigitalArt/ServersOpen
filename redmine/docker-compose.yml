@@ -1,0 +1,19 @@
+version: '2'
+services:
+    redmine:
+      image: redmine
+      restart: always
+      ports:
+        - 3000:3000
+      volumes:
+        - "/home/radosun/PhpstormProjects/Servers/redmine/files:/usr/src/redmine/files"
+        - "/home/radosun/PhpstormProjects/Servers/redmine/plugins:/usr/src/redmine/plugins"
+        - "/home/radosun/PhpstormProjects/Servers/redmine/config/database.yml:/usr/src/redmine/config/database.yml"
+      networks:
+        - mysql_front
+        - nginx_front
+networks:
+    nginx_front:
+      external: true
+    mysql_front:
+      external: true

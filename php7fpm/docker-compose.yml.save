@@ -1,0 +1,14 @@
+image: lampmage2
+    command: php -S 0.0.0.0:8000 -t /var/www/html/code/
+    ports:
+        - ":8000"
+    links:
+        - db
+db:
+    image: mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: test
+        MYSQL_DATABASE: magento2
+        MYSQL_USER: jason
+        MYSQL_PASSWORD: test
+
